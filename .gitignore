@@ -1,0 +1,11 @@
+LICENCIA
+Makefile
+WORK/
+filtrar
+libfiltra_alfa.c
+libfiltra_alfa.so
+libfiltra_delay.c
+libfiltra_delay.so
+libfiltra_void.c
+libfiltra_void.so
+
