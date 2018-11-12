@@ -86,6 +86,8 @@ char** filtros;   /* Lista de nombres de los filtros a aplicar */
 int    n_filtros; /* Tama~no de dicha lista */
 pid_t* pids;      /* Lista de los PIDs de los procesos que ejecutan los filtros */
 
+/* Tipo booleano*/
+typedef enum { false, true } bool;
 
 /* ---------------- FUNCIONES ----------------- */
 void preparar_filtros(void){
@@ -224,11 +226,14 @@ void preparar_alarma(void){
 		return; //si es NULL salimos ya
 	// Que sea positivo
 	int i;
-	for (i = 0; i < strlen(timeout_env); i++){
-		if (isdigit(timeout_env[i])){
-			fprintf(stderr, ERR_FILTRAR_TIMEOUT, timeout_env);
-			exit(1);
-		}
+	bool positivo =  true;
+	for (i = 0; i < strlen(timeout_env) && positivo; i++){
+		if (isdigit(timeout_env[i]))
+			positivo = false;
+	}
+	if (!positivo){
+		fprintf(stderr, ERR_FILTRAR_TIMEOUT, timeout_env);
+		exit(1);
 	}
 	timeout = atoi(timeout_env);
   fprintf(stderr, AVI_ALARMA_VENCERA, timeout);
@@ -241,9 +246,9 @@ void preparar_alarma(void){
 void imprimir_estado(char* filtro, int status){
 	/* Imprimimos el nombre del filtro y su estado de terminacion */
 	if(WIFEXITED(status))
-		fprintf(stderr,"%s: %d\n",filtro,WEXITSTATUS(status));
+		fprintf(stderr,FIN_PROCESO_CODIGO,filtro,WEXITSTATUS(status));
 	else
-		fprintf(stderr,"%s: senal %d\n",filtro,WTERMSIG(status));
+		fprintf(stderr,FIN_PROCESO_SENYAL,filtro,WTERMSIG(status));
 }
 
 void esperar_terminacion(void){
@@ -271,7 +276,7 @@ void esperar_terminacion(void){
 	  }
 	  filtro = dlsym(biblioteca, "tratar");
 	  if (filtro == NULL) {
-	    fprintf(stderr, ERR_BUSCAR_SIMBOLO, nombre_filtro);
+	    fprintf(stderr, ERR_BUSCAR_SIMBOLO, "tratar", nombre_filtro);
 	    exit(1);
 	  }
 		int num_bytes;
