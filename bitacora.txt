@@ -1,0 +1,34 @@
+Bitacora de la práctica.
+
+
+05/10/2018
+	Se han corregido los errores de compilación.	
+	He intentado hacer el funcionamiento básico. Sin alarmas, sin bibliotecas ni pipes. Solo filtrar 1 elemento.
+	Tiempo de trabajo: 2 horas.
+	NOTA = 0.
+
+05/10/201 - 31/10/2018
+	Se ha intentado corregir los errores de la primera entrega. Como no compilaba en local no se ha subido nada a triqui.
+	Tiempo de trabajo: Horas sueltas en esos días. Aproximadamente 10 horas en total.
+	Se pidio una tutoría con el profesor.
+
+01/11/2018
+	El trabajo compila. Se sube a triqui.
+	Tiempo de trabajo: 1 hora.
+	NOTA = 0 .
+	Debido a un fallo, el codigo anterior no era valido. Corregido ese fallo se vuelve a subir.
+	Tiempo de trabajo extra: 30 minutos.
+	NOTA = 48 .
+
+10/11/2018
+	Se ha implementado el resto del ejercicio. Ahora se han añadido la alarma y se ha escrito libfiltra_alfa.c	
+	Tiempo de trabajo: 6 horas.
+	Este fin de semana el sistema de entrega no ha funcionado correctamente. Por eso he hecho varias entregas con el mismo código.
+
+12/11/2018
+	He recibido las correcciones anteriores.
+	NOTA = 62 .
+	He avanzado en el código, intentando corregir los errores recibidos.
+	NOTA = 66.
+	Se han corregido más errores.
+	NOTA = 	.
