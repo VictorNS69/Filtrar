@@ -31,4 +31,4 @@ Bitacora de la práctica.
 	He avanzado en el código, intentando corregir los errores recibidos.
 	NOTA = 66.
 	Se han corregido más errores.
-	NOTA = 	.
+	NOTA = 70.

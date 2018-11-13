@@ -187,13 +187,13 @@ void recorrer_directorio(char* nombre_dir){
 		/* Emitimos el contenido del archivo por la salida estandar. */
 		while(write(1,buff,read(fd,buff,4096)) > 0)
 			continue;
-		if (errno) {
-			fprintf(stderr, ERR_LEER_DIRECTORIO, nombre_dir );
-			exit(1);
-		}
 		/* Cerrar. */
 		close(fd);
 		errno = 0; //reseteamos errno para futuras llamadas
+	}
+	if (errno) {
+		fprintf(stderr, ERR_LEER_DIRECTORIO, nombre_dir );
+		exit(1);
 	}
 	/* IMPORTANTE:
 	* Para que los lectores del pipe puedan terminar
