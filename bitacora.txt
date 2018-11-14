@@ -32,3 +32,7 @@ Bitacora de la práctica.
 	NOTA = 66.
 	Se han corregido más errores.
 	NOTA = 70.
+
+13/11/2018
+	Se han corregido los "exit()" innecesarios al llamar a los "AVISOS".
+	Nota = 70.

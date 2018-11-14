@@ -163,7 +163,7 @@ void recorrer_directorio(char* nombre_dir){
 		strcat(fich, ent->d_name);
 		if (stat(fich, &status) < 0) {
 			fprintf(stderr, AVI_STAT_FICHERO, fich);
-			exit(0);
+			//exit(0);
 		}
 		/* Nos saltamos las rutas que sean directorios. */
 		if (S_ISDIR(status.st_mode))
@@ -173,13 +173,13 @@ void recorrer_directorio(char* nombre_dir){
 		/* Tratamiento del error. */
 		if (fd == -1) {
 			fprintf(stderr, AVI_ABRIR_FICHERO, fich);
-			exit(0);
+			//exit(0);
 		}
 		/* Cuidado con escribir en un pipe sin lectores! */
 		if (errno == EPIPE) {
 			fprintf(stderr, AVI_EMITIR_FICHERO, fich);
 			close(fd);
-			exit(1);
+			//exit(1);
 		}
 		act.sa_flags = 0;
 		act.sa_handler = SIG_IGN;
