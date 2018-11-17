@@ -176,18 +176,20 @@ void recorrer_directorio(char* nombre_dir){
 		}
 		/* Cuidado con escribir en un pipe sin lectores! */
 		//fprintf(stderr, "Value of errno: %d\n", errno);
+		//fprintf(stderr, "1: %s\n", fich);
 		if ((errno == EPIPE)){
+			//fprintf(stderr, "2: %s\n", f1);
 			fprintf(stderr, AVI_EMITIR_FICHERO, fich);
 			close(fd);
 			exit(0);
 		}
-
 		act.sa_flags = 0;
 		act.sa_handler = SIG_IGN;
 		sigaction(SIGPIPE, &act, NULL);
 		/* Emitimos el contenido del archivo por la salida estandar. */
 		while(write(1,buff,read(fd,buff,4096)) > 0)
 			continue;
+			
 		/* Cerrar. */
 		close(fd);
 	}
