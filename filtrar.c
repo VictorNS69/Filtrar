@@ -58,27 +58,27 @@ const char* AVI_ALARMA_VENCERA = "AVISO: La alarma vencera tras %d segundos!\n";
 /* ---------------- PROTOTIPOS ----------------- */
 
 /* Esta funcion monta el filtro indicado y busca el simbolo "tratar"
-   que debe contener, y aplica dicha funcion "tratar()" para filtrar
-   toda la informacion que le llega por su entrada estandar antes
-   de enviarla hacia su salida estandar. */
+que debe contener, y aplica dicha funcion "tratar()" para filtrar
+toda la informacion que le llega por su entrada estandar antes
+de enviarla hacia su salida estandar. */
 extern void filtrar_con_filtro(char* nombre_filtro);
 
 /* Esta funcion lanza todos los procesos necesarios para ejecutar los filtros.
-   Dichos procesos tendran que tener redirigida su entrada y su salida. */
+Dichos procesos tendran que tener redirigida su entrada y su salida. */
 void preparar_filtros(void);
 
 /* Esta funcion recorrera el directorio pasado como argumento y por cada entrada
-   que no sea un directorio o cuyo nombre comience por un punto '.' la lee y
-   la escribe por la salida estandar (que seria redirigida al primero de los
-   filtros, si existe). */
+que no sea un directorio o cuyo nombre comience por un punto '.' la lee y
+la escribe por la salida estandar (que seria redirigida al primero de los
+filtros, si existe). */
 void recorrer_directorio(char* nombre_dir);
 
 /* Esta funcion recorre los procesos arrancados para ejecutar los filtros,
-   esperando a su terminacion y recogiendo su estado de terminacion. */
+esperando a su terminacion y recogiendo su estado de terminacion. */
 void esperar_terminacion(void);
 
 /* Desarrolle una funcion que permita controlar la temporizacion de la ejecucion
-   de los filtros. */
+de los filtros. */
 extern void preparar_alarma(void);
 
 /* ---------------- IMPLEMENTACIONES ----------------- */
@@ -86,53 +86,51 @@ char** filtros;   /* Lista de nombres de los filtros a aplicar */
 int    n_filtros; /* Tama~no de dicha lista */
 pid_t* pids;      /* Lista de los PIDs de los procesos que ejecutan los filtros */
 
-/* Tipo booleano*/
+/* Tipo booleano por si lo necesito*/
 typedef enum { false, true } bool;
 
 /* ---------------- FUNCIONES ----------------- */
 void preparar_filtros(void){
-	char *fichero;
-	int pip[2];
+	int pip[n_filtros][2];
 	int i;
-	for (i = 0; i < n_filtros;i++){
+	for (i = n_filtros-1; i >= 0 ;i--){
 		/* Tuberia hacia el hijo (que es el proceso que filtra). */
-		if (pipe(pip) <0){
+		if (pipe(pip[i]) < 0){
 			fprintf(stderr, "%s", ERR_CREAR_PIPE);
 			exit(1);
 		}
 		/* Lanzar nuevo proceso */
-		int p = fork();
-		switch(p){
+		//int p = fork();
+		//switch(p){
+		switch(pids[i] = fork()){
 			case -1:
 				/* Error. Mostrar y terminar. */
-				fprintf(stderr, ERR_CREAR_PROCESO, p);
-        exit(1);
+				fprintf(stderr, ERR_CREAR_PROCESO, pids[i]);
+				exit(1);
 			case  0:
 				/* Hijo: Redireccion y Ejecuta el filtro. */
-				dup2(pip[0], 0);
-				close (pip[0]);
-				close (pip[1]);
+				close(0);
+				dup(pip[i][0]);
+				close (pip[i][0]);
+				close (pip[i][1]);
 				//	if ()	/* El nombre termina en ".so" ? */
-				fichero = strrchr(filtros[i], '.');
+				char *fichero = strrchr(filtros[i], '.'); // miroar si es .so
 				if (fichero != NULL && strcmp(fichero, ".so") == 0){	/* SI. Montar biblioteca y utilizar filtro. */
 					//		filtrar_con_filtro(filtros[p]);
-					filtrar_con_filtro(filtros[p]);
-					exit(0);
+					filtrar_con_filtro(filtros[i]);
 				}
 				//	else
 				else{	/* NO. Ejecutar como mandato estandar. */
 					execlp(filtros[i], filtros[i], NULL, NULL);
 					fprintf(stderr, ERR_EJECUTAR_MANDATO, filtros[i]);
 					exit(1);
-				}
-			//
+			}
 			default:
 				/* Padre: Redireccion */
-				close (pip[0]);
-				dup2(pip[1], 1);
-				close (pip[1]);
-				pids[i] = p;
-				break;
+				close(1);
+				dup(pip[i][1]);
+				close (pip[i][0]);
+				close (pip[i][1]);
 		}
 	}
 }
@@ -157,30 +155,33 @@ void recorrer_directorio(char* nombre_dir){
 		/* Nos saltamos las que comienzan por un punto "." */
 		if(ent->d_name[0]=='.')
 			continue;
+
 		/* fich debe contener la ruta completa al fichero */
 		strcpy(fich, nombre_dir);
 		strcat(fich, "/");
 		strcat(fich, ent->d_name);
-		if (stat(fich, &status) < 0) {
+		if (stat(fich, &status) < 0)
 			fprintf(stderr, AVI_STAT_FICHERO, fich);
-			//exit(0);
-		}
+
 		/* Nos saltamos las rutas que sean directorios. */
 		if (S_ISDIR(status.st_mode))
 			continue;
+
 		/* Abrir el archivo. */
 		fd = open(fich, O_RDONLY);
 		/* Tratamiento del error. */
 		if (fd == -1) {
 			fprintf(stderr, AVI_ABRIR_FICHERO, fich);
-			//exit(0);
+			exit(0);
 		}
 		/* Cuidado con escribir en un pipe sin lectores! */
-		if (errno == EPIPE) {
+		//fprintf(stderr, "Value of errno: %d\n", errno);
+		if ((errno == EPIPE)){
 			fprintf(stderr, AVI_EMITIR_FICHERO, fich);
 			close(fd);
-			//exit(1);
+			exit(0);
 		}
+
 		act.sa_flags = 0;
 		act.sa_handler = SIG_IGN;
 		sigaction(SIGPIPE, &act, NULL);
@@ -189,7 +190,6 @@ void recorrer_directorio(char* nombre_dir){
 			continue;
 		/* Cerrar. */
 		close(fd);
-		errno = 0; //reseteamos errno para futuras llamadas
 	}
 	if (errno) {
 		fprintf(stderr, ERR_LEER_DIRECTORIO, nombre_dir );
@@ -200,55 +200,56 @@ void recorrer_directorio(char* nombre_dir){
 	* no deben quedar escritores al otro extremo. */
 	// IMPORTANTE
 	closedir(dir);
+	//exit(0);
+	errno = 0; //reseteamos errno para futuras llamadas
 }
 
-
-/* Funcion que se ejecutará cuando salte la alarma
+/* Funcion que se ejecutará cuando salte la alarma:
+* mata procesos.
 */
 void alarma(){
 	fprintf(stderr, "%s", AVI_ALARMA);
 	int i;
 	for (i = 0; i < n_filtros; i++) {
-    if (kill(pids[i], 0) == 0) {
-      if ((kill(pids[i], SIGKILL)) < 0) {
-        fprintf(stderr, ERR_MATAR_PROCESO, pids[i]);
-        exit(1);
-      }
-    }
-  }
+		if (kill(pids[i], 0) == 0) {
+			if ((kill(pids[i], SIGKILL)) < 0) {
+				fprintf(stderr, ERR_MATAR_PROCESO, pids[i]);
+				exit(1);
+			}
+		}
+	}
 }
 
 void preparar_alarma(void){
 	struct sigaction act;
 	int timeout;
-	char *timeout_env = getenv("FILTRAR_TIMEOUT");
-	if (timeout_env == NULL)
+	char *env = getenv("FILTRAR_TIMEOUT");
+	if (env == NULL)
 		return; //si es NULL salimos ya
 	// Que sea positivo
 	int i;
-	bool positivo =  true;
-	for (i = 0; i < strlen(timeout_env) && positivo; i++){
-		if (isdigit(timeout_env[i]))
-			positivo = false;
+	for (i = 0; i < strlen(env); i++){
+		if (isdigit(env[i]) == 0){
+			fprintf(stderr, ERR_FILTRAR_TIMEOUT, env);
+			exit(1);
+		}
 	}
-	if (!positivo){
-		fprintf(stderr, ERR_FILTRAR_TIMEOUT, timeout_env);
-		exit(1);
-	}
-	timeout = atoi(timeout_env);
-  fprintf(stderr, AVI_ALARMA_VENCERA, timeout);
+	timeout = atoi(env);
+	fprintf(stderr, AVI_ALARMA_VENCERA, timeout);
 	act.sa_flags = SA_RESTART;
-  act.sa_handler = &alarma;
-  sigaction(SIGALRM, &act, NULL);
-  alarm(timeout);
+	act.sa_handler = &alarma;
+	sigaction(SIGALRM, &act, NULL);
+	alarm(timeout);
 }
 
 void imprimir_estado(char* filtro, int status){
 	/* Imprimimos el nombre del filtro y su estado de terminacion */
 	if(WIFEXITED(status))
 		fprintf(stderr,FIN_PROCESO_CODIGO,filtro,WEXITSTATUS(status));
+		//printf(stderr,"%s: %d\n",filtro,WEXITSTATUS(status));
 	else
 		fprintf(stderr,FIN_PROCESO_SENYAL,filtro,WTERMSIG(status));
+		//printf(stderr,"%s: senal %d\n",filtro,WTERMSIG(status));
 }
 
 void esperar_terminacion(void){
@@ -257,49 +258,48 @@ void esperar_terminacion(void){
 	for(p=0;p<n_filtros;p++){
 		/* Espera al proceso pids[p] */
 		if (waitpid(pids[p], &status, 0) < 0) {
-      fprintf(stderr, ERR_ESPERAR_PROCESO, pids[p]);
-      exit(1);
-    }
+			fprintf(stderr, ERR_ESPERAR_PROCESO, pids[p]);
+			exit(1);
+		}
 		/* Muestra su estado. */
 		imprimir_estado(filtros[p], status);
-		//exit(0);
 	}
 }
-	void filtrar_con_filtro(char* nombre_filtro){
-	  char  bin[4096], bout[4096];
-	  int (*filtro) (char*, char*, int);
-	  void* biblioteca;
-	  biblioteca = dlopen(nombre_filtro, RTLD_LAZY);
-	  if (biblioteca == NULL) {
-	    fprintf(stderr, ERR_ABRIR_BIBLIOTECA, nombre_filtro);
-	    exit(1);
-	  }
-	  filtro = dlsym(biblioteca, "tratar");
-	  if (filtro == NULL) {
-	    fprintf(stderr, ERR_BUSCAR_SIMBOLO, "tratar", nombre_filtro);
-	    exit(1);
-	  }
-		int num_bytes;
-	  while ((num_bytes = read(0, bin, 4096)) > 0) {
-	    int filtrar = filtro(bin, bout, num_bytes);
-	    write(1, bout, filtrar);
-	    if (filtrar < 0) {
-	      fprintf(stderr, ERR_EJECUTAR_FILTRO, nombre_filtro);
-	      exit(1);
-	    }
-	  }
-  	dlclose(biblioteca);
+void filtrar_con_filtro(char* nombre_filtro){
+	char  bin[4096], bout[4096];
+	int (*filtro) (char*, char*, int);
+	void* biblioteca;
+	biblioteca = dlopen(nombre_filtro, RTLD_LAZY);
+	if (biblioteca == NULL) {
+		fprintf(stderr, ERR_ABRIR_BIBLIOTECA, nombre_filtro);
+		exit(1);
 	}
+	filtro = dlsym(biblioteca, "tratar");
+	if (filtro == NULL) {
+		fprintf(stderr, ERR_BUSCAR_SIMBOLO, "tratar", nombre_filtro);
+		exit(1);
+	}
+	int num_bytes;
+	while ((num_bytes = read(0, bin, 4096)) > 0) {
+		int filtrar = filtro(bin, bout, num_bytes);
+		write(1, bout, filtrar);
+		if (filtrar < 0) {
+			fprintf(stderr, ERR_EJECUTAR_FILTRO, nombre_filtro);
+			exit(1);
+		}
+	}
+	dlclose(biblioteca);
+	exit(0);
+}
 
 /*----------------------FUNCION PRINCIPAL------------*/
 int main(int argc, char* argv[]){
 	/* Chequeo de argumentos */
+	/* Invocacion sin argumentos  o con un numero de argumentos insuficiente */
 	if(argc<2){
 		fprintf(stderr,  MSG_USO, argv[0]);
 		exit(1);
 	}
-	/* Invocacion sin argumentos  o con un numero de argumentos insuficiente */
-	//exit(0);
 
 	filtros = &(argv[2]);                             /* Lista de filtros a aplicar */
 	n_filtros = argc-2;                               /* Numero de filtros a usar */

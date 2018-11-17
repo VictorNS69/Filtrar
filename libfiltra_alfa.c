@@ -1,4 +1,5 @@
 /*
+* Autor: Víctor Nieves Sánchez
 * filtrar: filtra por contenido los archivos del directorio indicado.
 *
 * Copyright (c) 2013,2017 Francisco Rosales <frosal@fi.upm.es>
@@ -22,12 +23,12 @@
 /* Devuelve el numero de caracteres que han pasado el filtro. */
 int tratar(char* buff_in, char* buff_out, int tam){
 	int i;
-	int num_pas = 0;
+	int o = 0;
 	for (i = 0; i < tam; i++) {
 		if (!isalpha(buff_in[i])) {
-			buff_out[num_pas] = buff_in[i];
-			num_pas++;
+			buff_out[o] = buff_in[i];
+			o++;
 		}
 	}
-	return num_pas;
+	return o;
 }

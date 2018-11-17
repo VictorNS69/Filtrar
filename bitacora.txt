@@ -1,24 +1,26 @@
-Bitacora de la práctica.
+Autor:	VÍCTOR NIEVES SÁNCHEZ
 
+Bitacora de la práctica.
 
 05/10/2018
 	Se han corregido los errores de compilación.	
 	He intentado hacer el funcionamiento básico. Sin alarmas, sin bibliotecas ni pipes. Solo filtrar 1 elemento.
-	Tiempo de trabajo: 2 horas.
+	Tiempo de trabajo: 30 minutos.
 	NOTA = 0.
 
 05/10/201 - 31/10/2018
 	Se ha intentado corregir los errores de la primera entrega. Como no compilaba en local no se ha subido nada a triqui.
-	Tiempo de trabajo: Horas sueltas en esos días. Aproximadamente 10 horas en total.
+	Tiempo de trabajo: Horas sueltas en esos días. Aproximadamente 7 horas en total.
 	Se pidio una tutoría con el profesor.
+	No se ha subido nada aún.
 
 01/11/2018
 	El trabajo compila. Se sube a triqui.
-	Tiempo de trabajo: 1 hora.
-	NOTA = 0 .
+	Tiempo de trabajo: 2 horas.
+	NOTA = 0.
 	Debido a un fallo, el codigo anterior no era valido. Corregido ese fallo se vuelve a subir.
 	Tiempo de trabajo extra: 30 minutos.
-	NOTA = 48 .
+	NOTA = 48.
 
 10/11/2018
 	Se ha implementado el resto del ejercicio. Ahora se han añadido la alarma y se ha escrito libfiltra_alfa.c	
@@ -27,12 +29,48 @@ Bitacora de la práctica.
 
 12/11/2018
 	He recibido las correcciones anteriores.
-	NOTA = 62 .
+	NOTA = 62.
 	He avanzado en el código, intentando corregir los errores recibidos.
+	Tiempo de trabajo: 1 hora.
 	NOTA = 66.
 	Se han corregido más errores.
+	Tiempo de trabajo: 1 hora.
 	NOTA = 70.
 
 13/11/2018
 	Se han corregido los "exit()" innecesarios al llamar a los "AVISOS".
-	Nota = 70.
+	Tiempo de trabajo: 30 minutos.
+	NOTA = 70.
+	Nada parece haber cambiado.
+
+15/11/2018
+	Se ha intentado corregir un fallo cuando interviene la variable de entorno FILTRAR_TIMEOUT.
+	Tiempo de trabajo: 1 hora.
+	NOTA = 90.
+	Quitados varios comentarios innecesarios y arreglado algunos fallos de estructura.
+	Tiempo de trabajo: 30 min.
+	NOTA = 90.
+
+16/11/2018
+	Se ha escrito un correo al profesor para tener consejo sobre los errores 45, 46, 47, 48, 49.
+	Se ha cambiado un poco la funcion "preparar_filtros()"
+	Tiempo de trabajo: 2 horas.
+	NOTA = 98.
+	Se han corregido el nuevo error y se han eliminado comentarios innecesarios (código antiguio eliminado)
+	NOTA = 92.
+	Se ha eliminado sin querer una línea que no debería haberse borrado.
+	Se ha modificado de nuevo.
+	Tiempo de trabajo: 5 minutos.
+	NOTA = 98.
+
+17/11/2018
+	Se ha corregido el error 40. 
+	Tiempo de trabajo: 20 minutos
+	NOTA = 56.
+	Sin querer se dejó un print en el código, lo cual hizo que la mayoría de pruebas fallaran.
+	Tiempo de trabajo: 2 minutos.
+	NOTA = 98.
+	
+
+NOTA FINAL: .
+
