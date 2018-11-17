@@ -70,7 +70,11 @@ Bitacora de la práctica.
 	Sin querer se dejó un print en el código, lo cual hizo que la mayoría de pruebas fallaran.
 	Tiempo de trabajo: 2 minutos.
 	NOTA = 98.
-	
+	Se crea una variable auxiliar "truco" para corregir el fallo 40.
+	NOTA = 98.
+	*Por algún motivo ese "truco" si funcionaba en mi máquina local, pero no pasa los test. He
+	decidido volver al código anterior a esta entrega.
+	Se ha subido la "entrega final".
 
-NOTA FINAL: .
+NOTA FINAL: 98.
 
