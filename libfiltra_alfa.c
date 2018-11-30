@@ -2,16 +2,6 @@
 * Autor: Víctor Nieves Sánchez
 * filtrar: filtra por contenido los archivos del directorio indicado.
 *
-* Copyright (c) 2013,2017 Francisco Rosales <frosal@fi.upm.es>
-* Todos los derechos reservados.
-*
-* Publicado bajo Licencia de Proyecto Educativo Práctico
-* <http://laurel.datsi.fi.upm.es/~ssoo/LICENCIA/LPEP>
-*
-* Queda prohibida la difusión total o parcial por cualquier
-* medio del material entregado al alumno para la realización
-* de este proyecto o de cualquier material derivado de este,
-* incluyendo la solución particular que desarrolle el alumno.
 */
 
 #include <stdio.h>
