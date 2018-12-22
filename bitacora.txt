@@ -76,5 +76,5 @@ Bitacora de la práctica.
 	decidido volver al código anterior a esta entrega.
 	Se ha subido la "entrega final".
 
-NOTA FINAL: 98.
+NOTA FINAL: 96.
 
