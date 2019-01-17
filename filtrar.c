@@ -75,9 +75,6 @@ char** filtros;   /* Lista de nombres de los filtros a aplicar */
 int    n_filtros; /* Tama~no de dicha lista */
 pid_t* pids;      /* Lista de los PIDs de los procesos que ejecutan los filtros */
 
-/* Tipo booleano por si lo necesito*/
-typedef enum { false, true } bool;
-
 /* ---------------- FUNCIONES ----------------- */
 void preparar_filtros(void){
 	int pip[n_filtros][2];
@@ -89,8 +86,6 @@ void preparar_filtros(void){
 			exit(1);
 		}
 		/* Lanzar nuevo proceso */
-		//int p = fork();
-		//switch(p){
 		switch(pids[i] = fork()){
 			case -1:
 				/* Error. Mostrar y terminar. */
@@ -105,7 +100,6 @@ void preparar_filtros(void){
 				//	if ()	/* El nombre termina en ".so" ? */
 				char *fichero = strrchr(filtros[i], '.'); // miroar si es .so
 				if (fichero != NULL && strcmp(fichero, ".so") == 0){	/* SI. Montar biblioteca y utilizar filtro. */
-					//		filtrar_con_filtro(filtros[p]);
 					filtrar_con_filtro(filtros[i]);
 				}
 				//	else
@@ -164,10 +158,8 @@ void recorrer_directorio(char* nombre_dir){
 			exit(0);
 		}
 		/* Cuidado con escribir en un pipe sin lectores! */
-		//fprintf(stderr, "Value of errno: %d\n", errno);
-		//fprintf(stderr, "1: %s\n", fich);
 		if ((errno == EPIPE)){
-			//fprintf(stderr, "2: %s\n", f1);
+
 			fprintf(stderr, AVI_EMITIR_FICHERO, fich);
 			close(fd);
 			exit(0);
@@ -191,7 +183,6 @@ void recorrer_directorio(char* nombre_dir){
 	* no deben quedar escritores al otro extremo. */
 	// IMPORTANTE
 	closedir(dir);
-	//exit(0);
 	errno = 0; //reseteamos errno para futuras llamadas
 }
 
@@ -237,10 +228,8 @@ void imprimir_estado(char* filtro, int status){
 	/* Imprimimos el nombre del filtro y su estado de terminacion */
 	if(WIFEXITED(status))
 		fprintf(stderr,FIN_PROCESO_CODIGO,filtro,WEXITSTATUS(status));
-		//printf(stderr,"%s: %d\n",filtro,WEXITSTATUS(status));
 	else
 		fprintf(stderr,FIN_PROCESO_SENYAL,filtro,WTERMSIG(status));
-		//printf(stderr,"%s: senal %d\n",filtro,WTERMSIG(status));
 }
 
 void esperar_terminacion(void){
