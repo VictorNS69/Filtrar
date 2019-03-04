@@ -31,3 +31,6 @@ Pero con las siguientes diferencias:
   - Mandato estándar sin argumentos, para cualquier otro nombre.
 - Sólo se procesarán las entradas de directorio que no empiecen por punto y no sean a su vez directorios.
 - Se implementará un control de tiempo máximo de ejecución.
+
+## Licencia
+[Licencia](/LICENSE).
